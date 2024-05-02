@@ -8,7 +8,7 @@ const app = express();
 //CORS
 app.use(cors());
 
-//
+//Lectura y parseo del body
 app.use(express.json());
 
 //Directorio público

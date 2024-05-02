@@ -1,35 +1,125 @@
+const knex = require('../config/db-config')
+import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
-import { v4 as uuidv4 } from 'uuid';
 import { newUser } from '../models/User';
+import { v4 as uuidv4 } from 'uuid';
+import { User } from '../interfaces/IUser';
+import { generateToken } from '../helpers/jwt';
 
 export const registerUser = async (req: Request, res: Response) => {
 
     try {
-        const id = uuidv4();
-        const { name, lastname, email, password } = req.body;
+        const id: string = uuidv4();
+        let { name, lastname, email, password }: User = req.body;
+        const user: User = await knex('users').where('email', email).first();
 
-        console.log(req.body);
+        if (user) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Email already exists'
+            });
+        }
 
-        const user = await newUser({ id, name, lastname, email, password })
+        const salt: string = bcrypt.genSaltSync();
+        password = bcrypt.hashSync(password, salt);
 
-        res.status(200).json({
+        await newUser({ id, name, lastname, email, password })
+
+        const token: string = await generateToken(id, name);
+
+        res.status(201).json({
             ok: true,
             msg: 'registerUser',
-            data: user
+            data: {
+                id,
+                name,
+                lastname,
+                email,
+                token,
+            }
         });
+
     } catch (error) {
-        console.log(error);
+
+        console.error(error);
         res.status(500).json({
             ok: false,
-            msg: 'could not register an user',
+            msg: 'Could not register an user',
         });
+
     }
 };
 
 export const loginUser = async (req: Request, res: Response) => {
-    res.status(200).json({
-        ok: true,
-        msg: 'loginUser'
-    })
+
+    const { email, password } = req.body;
+
+    try {
+        let validPassword: boolean = false;
+
+        const user: User = await knex('users').where('email', email).first();
+        if (user) {
+            validPassword = bcrypt.compareSync(password, user.password);
+        }
+
+        if (!user || !validPassword) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Credentials are not valid'
+            });
+        }
+
+        const token: string = await generateToken(user.id, user.name);
+
+        res.status(200).json({
+            ok: true,
+            msg: 'User logged in',
+            data: {
+                id: user.id,
+                name: user.name,
+                lastname: user.lastname,
+                email: user.email,
+                token,
+            }
+        });
+
+    } catch (error) {
+
+        console.error(error);
+        res.status(500).json({
+            ok: true,
+            msg: 'Could not login an user'
+        })
+
+    }
+
 };
+
+export const renewToken = async (req: Request, res: Response) => {
+
+    const { id } = req.body;
+
+    const user : User = await knex('users').where('id', id).first();
+
+    if(!user){
+        return res.status(400).json({
+            ok: false,
+            msg: 'User.id not found'
+        });
+    }
+
+    const token: string = await generateToken(user.id, user.name);
+
+    res.json({
+        ok: true,
+        msg: 'Token renewed',
+        data: {
+            id: user.id,
+            name: user.name,
+            lastname: user.lastname,
+            email: user.email,
+            token
+        }
+    });
+}
 
