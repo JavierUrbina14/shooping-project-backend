@@ -10,7 +10,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     try {
         const id: string = uuidv4();
-        let { name, lastname, email, password }: User = req.body;
+        let { firstname, lastname, email, password }: User = req.body;
         const user: User = await knex('users').where('email', email).first();
 
         if (user) {
@@ -23,16 +23,16 @@ export const registerUser = async (req: Request, res: Response) => {
         const salt: string = bcrypt.genSaltSync();
         password = bcrypt.hashSync(password, salt);
 
-        await newUser({ id, name, lastname, email, password })
+        await newUser({ id, firstname, lastname, email, password })
 
-        const token: string = await generateToken(id, name);
+        const token: string = await generateToken(id, firstname);
 
         res.status(201).json({
             ok: true,
             msg: 'registerUser',
             data: {
                 id,
-                name,
+                firstname,
                 lastname,
                 email,
                 token,
@@ -69,14 +69,14 @@ export const loginUser = async (req: Request, res: Response) => {
             });
         }
 
-        const token: string = await generateToken(user.id, user.name);
+        const token: string = await generateToken(user.id, user.firstname);
 
         res.status(200).json({
             ok: true,
             msg: 'User logged in',
             data: {
                 id: user.id,
-                name: user.name,
+                firstname: user.firstname,
                 lastname: user.lastname,
                 email: user.email,
                 token,
@@ -108,14 +108,14 @@ export const renewToken = async (req: Request, res: Response) => {
         });
     }
 
-    const token: string = await generateToken(user.id, user.name);
+    const token: string = await generateToken(user.id, user.firstname);
 
     res.json({
         ok: true,
         msg: 'Token renewed',
         data: {
             id: user.id,
-            name: user.name,
+            firstname: user.firstname,
             lastname: user.lastname,
             email: user.email,
             token

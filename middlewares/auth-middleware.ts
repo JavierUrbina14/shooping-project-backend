@@ -2,7 +2,7 @@ import { check } from 'express-validator';
 import { validateFields } from './validate-fields';
 
 export const validateNewUser = [
-    check('name', 'name is required').not().isEmpty(),
+    check('firstname', 'firstname is required').not().isEmpty(),
     check('lastname', 'lastname is required').not().isEmpty(),
     check('email', 'email is required').isEmail(),
     check('password', 'password is required').not().isEmpty(),
