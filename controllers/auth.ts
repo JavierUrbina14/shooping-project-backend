@@ -16,7 +16,7 @@ export const registerUser = async (req: Request, res: Response) => {
         if (user) {
             return res.status(400).json({
                 ok: false,
-                msg: 'Email already exists'
+                msg: 'El email ya existe'
             });
         }
 
@@ -29,7 +29,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
         res.status(201).json({
             ok: true,
-            msg: 'registerUser',
+            msg: 'Se registró el usuario correctamente',
             data: {
                 id,
                 firstname,
@@ -44,7 +44,7 @@ export const registerUser = async (req: Request, res: Response) => {
         console.error(error);
         res.status(500).json({
             ok: false,
-            msg: 'Could not register an user',
+            msg: 'No se pudo registrar el usuario',
         });
 
     }
@@ -65,7 +65,7 @@ export const loginUser = async (req: Request, res: Response) => {
         if (!user || !validPassword) {
             return res.status(400).json({
                 ok: false,
-                msg: 'Credentials are not valid'
+                msg: 'Las credenciales no son válidas'
             });
         }
 
@@ -73,7 +73,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
         res.status(200).json({
             ok: true,
-            msg: 'User logged in',
+            msg: 'Usuario logueado correctamente',
             data: {
                 id: user.id,
                 firstname: user.firstname,
@@ -88,7 +88,7 @@ export const loginUser = async (req: Request, res: Response) => {
         console.error(error);
         res.status(500).json({
             ok: true,
-            msg: 'Could not login an user'
+            msg: 'No se pudo loguear el usuario'
         })
 
     }
@@ -104,7 +104,7 @@ export const renewToken = async (req: Request, res: Response) => {
     if(!user){
         return res.status(400).json({
             ok: false,
-            msg: 'User.id not found'
+            msg: 'El usuario no existe'
         });
     }
 
@@ -112,7 +112,7 @@ export const renewToken = async (req: Request, res: Response) => {
 
     res.json({
         ok: true,
-        msg: 'Token renewed',
+        msg: 'Token renovado correctamente',
         data: {
             id: user.id,
             firstname: user.firstname,

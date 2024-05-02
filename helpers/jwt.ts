@@ -12,7 +12,7 @@ export const generateToken = (uid: string, firstname: string) : Promise<string> 
             }, (err, token) => {
                 if (err) {
                     console.error(err);
-                    reject('Could not generate the token');
+                    reject('No se pudo generar el token');
                 } else {
                     resolve(token!);
                 }

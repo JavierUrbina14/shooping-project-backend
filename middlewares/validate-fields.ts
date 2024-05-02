@@ -9,7 +9,7 @@ export const validateFields = (req: Request, res: Response, next: NextFunction) 
         if( !errors.isEmpty() ){
             return res.status(400).json({
                 ok: false,
-                msg: 'Missing fields',
+                msg: 'Falló la validación de los campos',
                 errors: errors.mapped()
             });
         }

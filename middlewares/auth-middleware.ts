@@ -2,17 +2,17 @@ import { check } from 'express-validator';
 import { validateFields } from './validate-fields';
 
 export const validateNewUser = [
-    check('firstname', 'firstname is required').not().isEmpty(),
-    check('lastname', 'lastname is required').not().isEmpty(),
-    check('email', 'email is required').isEmail(),
-    check('password', 'password is required').not().isEmpty(),
-    check('password', 'password must be at least 6 characters').isLength({ min: 6 }),
+    check('firstname', 'El nombre es obligatorio').not().isEmpty(),
+    check('lastname', 'El apellido es obligatorio').not().isEmpty(),
+    check('email', 'El email es obligatorio').isEmail(),
+    check('password', 'La contraseña es obligatoria').not().isEmpty(),
+    check('password', 'La contraseña tiene que tener un minimo de 6 carácteres').isLength({ min: 6 }),
     validateFields,
 ];
 
 export const validateLogin = [
-    check('email', 'email is required').isEmail(),
-    check('password', 'password is required').not().isEmpty(),
-    check('password', 'password must be at least 6 characters').isLength({ min: 6 }),
+    check('email', 'El email es obligatorio').not().isEmpty().isEmail(),
+    check('password', 'La contraseña es obligatoria').not().isEmpty(),
+    check('password', 'La contraseña tiene que tener un minimo de 6 carácteres').isLength({ min: 6 }),
     validateFields,
 ];

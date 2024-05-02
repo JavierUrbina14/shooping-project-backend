@@ -10,7 +10,7 @@ export const validateJWT = (req: Request, res: Response, next: NextFunction) => 
     if (!token) {
         return res.status(401).json({
             ok: false,
-            msg: 'There is no token in the request'
+            msg: 'No hay token en la petición'
         });
     }
 
@@ -25,7 +25,7 @@ export const validateJWT = (req: Request, res: Response, next: NextFunction) => 
 
         return res.status(401).json({
             ok: false,
-            msg: 'Invalid token'
+            msg: 'Token invalido'
         });
 
     }
