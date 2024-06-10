@@ -15,7 +15,7 @@ export const getAllProducts = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             ok: false,
             msg: 'No se pudieron obtener los productos',
@@ -39,7 +39,7 @@ export const getProductById = async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({
             ok: false,
             msg: 'No se pudo obtener el producto',

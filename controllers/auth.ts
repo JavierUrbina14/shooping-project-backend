@@ -4,7 +4,58 @@ import { Request, Response } from 'express';
 import { newUser } from '../models/User';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from '../interfaces/IUser';
+import { Admin } from '../interfaces/IAdmin';
 import { generateToken } from '../helpers/jwt';
+
+export const loginAdmin = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+
+    try {
+        let validPassword: boolean = false;
+
+        const admin: Admin = await knex('admins').where('email', email).first();
+
+        if (admin) {
+            validPassword = bcrypt.compareSync(password, admin.password);
+        }
+
+        if (!admin || !validPassword) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'Las credenciales no son válidas'
+            });
+        }
+
+        await knex('admins').where('id', admin.id).update({ last_login: new Date() });
+
+        const token: string = await generateToken(admin.id, admin.firstname);
+
+        res.status(200).json({
+            ok: true,
+            msg: 'Admin logueado correctamente',
+            data: {
+                id: admin.id,
+                firstname: admin.firstname,
+                lastname: admin.lastname,
+                email: admin.email,
+                role: admin.role,
+                status: admin.status,
+                phone: admin.phone,
+                address: admin.address,
+                token,
+            }
+        });
+
+    } catch (error) {
+
+        console.error(error);
+        res.status(500).json({
+            ok: true,
+            msg: 'No se pudo loguear el admin'
+        })
+
+    }
+}
 
 export const registerUser = async (req: Request, res: Response) => {
 
@@ -99,9 +150,9 @@ export const renewToken = async (req: Request, res: Response) => {
 
     const { id } = req.body;
 
-    const user : User = await knex('users').where('id', id).first();
+    const user: User = await knex('users').where('id', id).first();
 
-    if(!user){
+    if (!user) {
         return res.status(400).json({
             ok: false,
             msg: 'El usuario no existe'

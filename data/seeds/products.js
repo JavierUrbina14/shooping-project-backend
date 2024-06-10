@@ -4,6 +4,7 @@
  */
 exports.seed = async function(knex) {
   // Deletes ALL existing entries
+  await knex('products_details').del()
   await knex('products').del()
   await knex('products').insert([
     {id: 'a5ce5aa3-706e-4c2c-b6a5-24a477fd2ae5', name: 'polera nike', image: 'https://aztecasoccer.com/cdn/shop/files/reusch-mens-match-ii-padded-goalkeeper-jersey-safety-yellow-blue-front.jpg?v=1710443734&width=1100', price: 40000, category: 'polera', stock: 10},
@@ -13,7 +14,6 @@ exports.seed = async function(knex) {
     {id: '28143c5f-3f5b-48e2-af86-d4b99c0266bf', name: 'zapatos deportivos mercurial', image: 'https://aztecasoccer.com/cdn/shop/files/nike-mens-zoom-mercurial-superfly-9-mds-elite-fg-green-strike-black.png?v=1709144919&width=1100', price: 50000, category: 'zapatillas deportivas', stock: 10},
     {id: '642949b5-937c-4b59-ad26-b44ef05646a6', name: 'zapatos deportivos adidas', image: 'https://aztecasoccer.com/cdn/shop/files/nike-womens-france-2022-23-home-jersey-w-griezman-7-printing-both.jpg?v=1712771352&width=1100', price: 60000, category: 'camisetas de football', stock: 10},
   ])
-  await knex('products_details').del()
   await knex('products_details').insert([
     {id: 'e9f9968e-5403-45a3-8d14-6494591c7298', product_id: 'a5ce5aa3-706e-4c2c-b6a5-24a477fd2ae5', description: 'polera nike de poliestireno perfecto para jugar partidos en lo cual se requiere muchas cosas para juggar que se yo papito me esta quedando de pana siu', rating: '5', size: 'M', brand: 'nike'},
     {id: 'ec656cd8-4547-4f5e-9d58-db17beb465e1', product_id: '8e24bf49-678f-48c7-9ff6-b7a6c89155f8', description: 'polera adidas de poliestireno perfecto para jugar partidos en lo cual se requiere muchas cosas para juggar que se yo papito me esta quedando de pana siu', rating: '4', size: 'L', brand: 'adidas'},
