@@ -130,6 +130,7 @@ export const loginUser = async (req: Request, res: Response) => {
                 firstname: user.firstname,
                 lastname: user.lastname,
                 email: user.email,
+                role: user.role,
                 token,
             }
         });
@@ -150,7 +151,21 @@ export const renewToken = async (req: Request, res: Response) => {
 
     const { id } = req.body;
 
-    const user: User = await knex('users').where('id', id).first();
+    let user: (User | Admin) | null = null;
+
+    try {
+        user = await knex('users').where('id', id).first();
+    } catch (error) {
+        console.error('Error al consultar la tabla users:', error);
+    }
+
+    if (!user) {
+        try {
+            user = await knex('admins').where('id', id).first();
+        } catch (error) {
+            console.error('Error al consultar la tabla admins:', error);
+        }
+    }
 
     if (!user) {
         return res.status(400).json({
@@ -169,6 +184,7 @@ export const renewToken = async (req: Request, res: Response) => {
             firstname: user.firstname,
             lastname: user.lastname,
             email: user.email,
+            role: user.role,
             token
         }
     });
